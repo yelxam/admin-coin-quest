@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { AddCoinsDialog } from "@/components/AddCoinsDialog";
 import { ManageCategoriesDialog } from "@/components/ManageCategoriesDialog";
+import { CreateUserDialog } from "@/components/CreateUserDialog";
 import { UsersTable } from "@/components/UsersTable";
 
 interface Stats {
@@ -110,7 +111,8 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          <CreateUserDialog onSuccess={handleRefresh} />
           <AddCoinsDialog onSuccess={handleRefresh} />
           <ManageCategoriesDialog onSuccess={handleRefresh} />
         </div>
