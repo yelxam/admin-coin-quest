@@ -6,6 +6,7 @@ import { Coins, Users, TrendingUp, LogOut, Plus, Trophy } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { AddCoinsDialog } from "@/components/AddCoinsDialog";
+import { RemoveCoinsDialog } from "@/components/RemoveCoinsDialog";
 import { ManageCategoriesDialog } from "@/components/ManageCategoriesDialog";
 import { CreateUserDialog } from "@/components/CreateUserDialog";
 import { ResetPasswordDialog } from "@/components/ResetPasswordDialog";
@@ -121,6 +122,7 @@ const AdminDashboard = () => {
         <div className="flex flex-wrap gap-3">
           <CreateUserDialog onSuccess={handleRefresh} />
           <AddCoinsDialog onSuccess={handleRefresh} />
+          <RemoveCoinsDialog onSuccess={handleRefresh} />
           <ResetPasswordDialog />
           <ManageCategoriesDialog onSuccess={handleRefresh} />
         </div>
