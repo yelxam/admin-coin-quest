@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { AddCoinsDialog } from "@/components/AddCoinsDialog";
 import { ManageCategoriesDialog } from "@/components/ManageCategoriesDialog";
 import { CreateUserDialog } from "@/components/CreateUserDialog";
+import { ResetPasswordDialog } from "@/components/ResetPasswordDialog";
 import { UsersTable } from "@/components/UsersTable";
 
 interface Stats {
@@ -114,6 +115,7 @@ const AdminDashboard = () => {
         <div className="flex flex-wrap gap-3">
           <CreateUserDialog onSuccess={handleRefresh} />
           <AddCoinsDialog onSuccess={handleRefresh} />
+          <ResetPasswordDialog />
           <ManageCategoriesDialog onSuccess={handleRefresh} />
         </div>
 
