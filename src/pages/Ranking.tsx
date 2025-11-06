@@ -30,6 +30,18 @@ const Ranking = () => {
       navigate("/auth");
       return;
     }
+
+    // Verificar se o usuário é admin
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: user.id,
+      _role: "admin",
+    });
+
+    if (!isAdmin) {
+      navigate("/");
+      return;
+    }
+
     setCurrentUserId(user.id);
   };
 

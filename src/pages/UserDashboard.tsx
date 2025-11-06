@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Coins, LogOut, TrendingUp, TrendingDown, Trophy } from "lucide-react";
+import { Coins, LogOut, TrendingUp, TrendingDown } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { TransactionsList } from "@/components/TransactionsList";
@@ -75,16 +75,10 @@ const UserDashboard = () => {
               <p className="text-sm text-muted-foreground">{profile?.email}</p>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate("/ranking")}>
-              <Trophy className="w-4 h-4 mr-2" />
-              Ranking
-            </Button>
-            <Button variant="outline" onClick={handleSignOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sair
-            </Button>
-          </div>
+          <Button variant="outline" onClick={handleSignOut}>
+            <LogOut className="w-4 h-4 mr-2" />
+            Sair
+          </Button>
         </div>
       </header>
 
