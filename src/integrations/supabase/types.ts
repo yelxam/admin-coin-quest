@@ -133,6 +133,15 @@ export type Database = {
     }
     Functions: {
       get_user_balance: { Args: { _user_id: string }; Returns: number }
+      get_user_ranking: {
+        Args: never
+        Returns: {
+          balance: number
+          full_name: string
+          rank: number
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

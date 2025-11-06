@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Coins, Users, TrendingUp, LogOut, Plus } from "lucide-react";
+import { Coins, Users, TrendingUp, LogOut, Plus, Trophy } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { AddCoinsDialog } from "@/components/AddCoinsDialog";
@@ -72,10 +72,16 @@ const AdminDashboard = () => {
               <p className="text-sm text-muted-foreground">Gestão de moedas e usuários</p>
             </div>
           </div>
-          <Button variant="outline" onClick={handleSignOut}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Sair
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate("/ranking")}>
+              <Trophy className="w-4 h-4 mr-2" />
+              Ranking
+            </Button>
+            <Button variant="outline" onClick={handleSignOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Sair
+            </Button>
+          </div>
         </div>
       </header>
 
