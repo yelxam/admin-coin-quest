@@ -11,6 +11,8 @@ import { ManageCategoriesDialog } from "@/components/ManageCategoriesDialog";
 import { CreateUserDialog } from "@/components/CreateUserDialog";
 import { ResetPasswordDialog } from "@/components/ResetPasswordDialog";
 import { UsersTable } from "@/components/UsersTable";
+import { ManageCompaniesDialog } from "@/components/ManageCompaniesDialog";
+import { ManageTeamsDialog } from "@/components/ManageTeamsDialog";
 
 interface Stats {
   totalUsers: number;
@@ -120,6 +122,8 @@ const AdminDashboard = () => {
         </div>
 
         <div className="flex flex-wrap gap-3">
+          <ManageCompaniesDialog onSuccess={handleRefresh} />
+          <ManageTeamsDialog onSuccess={handleRefresh} />
           <CreateUserDialog onSuccess={handleRefresh} />
           <AddCoinsDialog onSuccess={handleRefresh} />
           <RemoveCoinsDialog onSuccess={handleRefresh} />

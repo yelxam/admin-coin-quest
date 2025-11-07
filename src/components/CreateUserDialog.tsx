@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,18 @@ interface CreateUserDialogProps {
 export const CreateUserDialog = ({ onSuccess }: CreateUserDialogProps) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [companies, setCompanies] = useState<{ id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    if (open) {
+      fetchCompanies();
+    }
+  }, [open]);
+
+  const fetchCompanies = async () => {
+    const { data } = await supabase.from("companies").select("id, name");
+    setCompanies(data || []);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,6 +37,7 @@ export const CreateUserDialog = ({ onSuccess }: CreateUserDialogProps) => {
     const password = formData.get("password") as string;
     const fullName = formData.get("full_name") as string;
     const role = formData.get("role") as string;
+    const companyId = formData.get("company_id") as string;
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -38,6 +51,7 @@ export const CreateUserDialog = ({ onSuccess }: CreateUserDialogProps) => {
           password,
           full_name: fullName,
           role,
+          company_id: companyId,
         },
       });
 
@@ -115,6 +129,22 @@ export const CreateUserDialog = ({ onSuccess }: CreateUserDialogProps) => {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="company_id">Empresa *</Label>
+            <Select name="company_id" required disabled={isLoading}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione uma empresa" />
+              </SelectTrigger>
+              <SelectContent>
+                {companies.map((company) => (
+                  <SelectItem key={company.id} value={company.id}>
+                    {company.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="role">Tipo de Usuário</Label>
             <Select name="role" defaultValue="user" disabled={isLoading}>
               <SelectTrigger>
@@ -122,6 +152,7 @@ export const CreateUserDialog = ({ onSuccess }: CreateUserDialogProps) => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="user">👤 Usuário Comum</SelectItem>
+                <SelectItem value="manager">👨‍💼 Gerente</SelectItem>
                 <SelectItem value="admin">👑 Administrador</SelectItem>
               </SelectContent>
             </Select>

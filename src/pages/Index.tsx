@@ -11,6 +11,7 @@ const Index = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isManager, setIsManager] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -45,16 +46,29 @@ const Index = () => {
 
   const checkUserRole = async (userId: string) => {
     try {
-      const { data } = await supabase
+      const { data: adminData } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", userId)
         .eq("role", "admin")
         .single();
 
-      setIsAdmin(!!data);
+      const { data: managerData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "manager")
+        .single();
+
+      setIsAdmin(!!adminData);
+      setIsManager(!!managerData);
+
+      if (managerData) {
+        navigate("/manager");
+      }
     } catch (error) {
       setIsAdmin(false);
+      setIsManager(false);
     } finally {
       setIsLoading(false);
     }

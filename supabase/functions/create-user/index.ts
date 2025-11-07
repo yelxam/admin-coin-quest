@@ -47,16 +47,16 @@ serve(async (req) => {
     }
 
     // Get request body
-    const { email, password, full_name, role = 'user' } = await req.json();
+    const { email, password, full_name, role = 'user', company_id } = await req.json();
 
-    if (!email || !password || !full_name) {
+    if (!email || !password || !full_name || !company_id) {
       return new Response(
-        JSON.stringify({ error: 'Email, senha e nome completo são obrigatórios' }),
+        JSON.stringify({ error: 'Email, senha, nome completo e empresa são obrigatórios' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Creating user:', { email, full_name, role });
+    console.log('Creating user:', { email, full_name, role, company_id });
 
     // Create user using admin API
     const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
@@ -65,6 +65,7 @@ serve(async (req) => {
       email_confirm: true,
       user_metadata: {
         full_name,
+        company_id,
       },
     });
 
@@ -78,18 +79,37 @@ serve(async (req) => {
 
     console.log('User created successfully:', newUser.user.id);
 
-    // The trigger will create the profile and default role automatically
-    // If admin role is needed, update it
-    if (role === 'admin') {
+    // Update profile with company_id
+    const { error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .update({ company_id })
+      .eq('id', newUser.user.id);
+
+    if (profileError) {
+      console.error('Error updating profile with company_id:', profileError);
+    }
+
+    // Update user role if needed
+    if (role === 'admin' || role === 'manager') {
       const { error: updateRoleError } = await supabaseAdmin
         .from('user_roles')
-        .update({ role: 'admin' })
+        .update({ role, company_id })
         .eq('user_id', newUser.user.id);
 
       if (updateRoleError) {
-        console.error('Error updating role to admin:', updateRoleError);
+        console.error('Error updating role:', updateRoleError);
       } else {
-        console.log('Role updated to admin');
+        console.log('Role updated to', role);
+      }
+    } else {
+      // For regular users, just update company_id
+      const { error: updateRoleError } = await supabaseAdmin
+        .from('user_roles')
+        .update({ company_id })
+        .eq('user_id', newUser.user.id);
+
+      if (updateRoleError) {
+        console.error('Error updating user_roles with company_id:', updateRoleError);
       }
     }
 
