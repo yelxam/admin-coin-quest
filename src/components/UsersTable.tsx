@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Coins } from "lucide-react";
+import { UpdateUserEmailDialog } from "./UpdateUserEmailDialog";
+import { DeleteUserDialog } from "./DeleteUserDialog";
+import { ResetPasswordDialog } from "./ResetPasswordDialog";
 
 interface User {
   id: string;
@@ -66,6 +69,7 @@ export const UsersTable = ({ onUpdate }: UsersTableProps) => {
           <TableHead>Email</TableHead>
           <TableHead>Saldo</TableHead>
           <TableHead>Cadastrado em</TableHead>
+          <TableHead className="text-right">Ações</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -81,6 +85,21 @@ export const UsersTable = ({ onUpdate }: UsersTableProps) => {
             </TableCell>
             <TableCell className="text-muted-foreground">
               {new Date(user.created_at).toLocaleDateString("pt-BR")}
+            </TableCell>
+            <TableCell className="text-right">
+              <div className="flex justify-end gap-1">
+                <UpdateUserEmailDialog 
+                  userId={user.id} 
+                  currentEmail={user.email}
+                  onSuccess={onUpdate}
+                />
+                <ResetPasswordDialog userId={user.id} />
+                <DeleteUserDialog 
+                  userId={user.id} 
+                  userName={user.full_name}
+                  onSuccess={onUpdate}
+                />
+              </div>
             </TableCell>
           </TableRow>
         ))}

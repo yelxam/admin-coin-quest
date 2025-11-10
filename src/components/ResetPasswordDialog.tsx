@@ -15,9 +15,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { KeyRound } from "lucide-react";
 
-export function ResetPasswordDialog() {
+interface ResetPasswordDialogProps {
+  userId?: string;
+  userEmail?: string;
+}
+
+export function ResetPasswordDialog({ userId, userEmail }: ResetPasswordDialogProps = {}) {
   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(userEmail || "");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +40,7 @@ export function ResetPasswordDialog() {
 
       const { data, error } = await supabase.functions.invoke('reset-user-password', {
         body: { 
-          email,
+          email: email || userEmail,
           new_password: newPassword 
         },
       });
@@ -61,31 +66,39 @@ export function ResetPasswordDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <KeyRound className="mr-2 h-4 w-4" />
-          Resetar Senha
-        </Button>
+        {userId ? (
+          <Button variant="ghost" size="sm">
+            <KeyRound className="w-4 h-4" />
+          </Button>
+        ) : (
+          <Button variant="outline">
+            <KeyRound className="mr-2 h-4 w-4" />
+            Resetar Senha
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleResetPassword}>
           <DialogHeader>
             <DialogTitle>Resetar Senha de Usuário</DialogTitle>
             <DialogDescription>
-              Digite o email do usuário e a nova senha.
+              {userEmail ? `Resetando senha para: ${userEmail}` : "Digite o email do usuário e a nova senha."}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email do Usuário</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="usuario@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
+            {!userId && (
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email do Usuário</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="usuario@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="newPassword">Nova Senha</Label>
               <Input
